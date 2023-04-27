@@ -18,39 +18,33 @@ import java.util.List;
 public class ProfileController {
     @Autowired
     private ProfileService profileService;
+    private Container container = new Container();
 
     @PostMapping({"", "/"})
     public ResponseEntity<ProfileDTO> create(@RequestBody ProfileDTO dto,
                                              @RequestHeader("Authorization") String authorization) {
-        String[] str = authorization.split(" ");
-        String jwt = str[1];
-        JwtDTO jwtDTO = JwtUtil.decode(jwt);
-        if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
-            throw new MethodNotAllowedException("Method not allowed");
-        }
-        return ResponseEntity.ok(profileService.create(dto, jwtDTO.getId()));
+        JwtDTO jwtDTO = JwtUtil.getJwtDTO(authorization, ProfileRole.ADMIN);
+        return ResponseEntity.ok(profileService.create(dto));
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<?> update(@RequestBody ProfileDTO dto,
+    @PostMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable("id") Integer id,
+                                    @RequestBody ProfileDTO dto,
                                     @RequestHeader("Authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
-        if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
-            throw new MethodNotAllowedException("method not allowed !");
-        }
-        return ResponseEntity.ok(profileService.update(dto));
+        JwtDTO jwtDTO = JwtUtil.getJwtDTO(authorization, ProfileRole.ADMIN);
+        return ResponseEntity.ok(profileService.update(dto,id));
     }
 
     @PostMapping("/update-detail")
     public ResponseEntity<?> updateDetail(@RequestBody ProfileDTO dto,
                                           @RequestHeader("Authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+        JwtDTO jwtDTO = container.authorization(authorization);
         return ResponseEntity.ok(profileService.updateDetail(dto, jwtDTO.getId()));
     }
 
     @GetMapping("")
     public ResponseEntity<List<ProfileDTO>> getAll(@RequestHeader("Authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+        JwtDTO jwtDTO = container.authorization(authorization);
         if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
             throw new MethodNotAllowedException("method not allowed !");
         }
@@ -65,7 +59,7 @@ public class ProfileController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") Integer id,
                                         @RequestHeader("Authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+        JwtDTO jwtDTO = container.authorization(authorization);
         if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
             throw new MethodNotAllowedException("method not allowed !");
         }

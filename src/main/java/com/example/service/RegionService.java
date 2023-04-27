@@ -1,10 +1,7 @@
 package com.example.service;
 
-import com.example.dto.ArticleTypeDTO;
-import com.example.dto.ArticleTypeRequestDTO;
-import com.example.dto.RegionDTO;
-import com.example.dto.RegionRequestDTO;
-import com.example.entity.ArticleTypeEntity;
+import com.example.dto.region.RegionDTO;
+import com.example.dto.region.RegionRequestDTO;
 import com.example.entity.RegionEntity;
 import com.example.repository.RegionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +16,9 @@ public class RegionService {
     private RegionRepository regionRepository;
 
     public RegionDTO create(RegionDTO dto) {
-        if (getById(dto.getId()) != null) {
-            throw new RuntimeException(" not null ");
-        }
-        regionRepository.save(DTOToEntity(dto));
+        RegionEntity entity = DTOToEntity(dto);
+        regionRepository.save(entity);
+        dto.setId(entity.getId());
         return dto;
     }
 
@@ -30,14 +26,55 @@ public class RegionService {
         if (getById(id) == null) {
             throw new RuntimeException("this articleType is null");
         }
-        regionRepository.save(checkDTO(dto));
         dto.setId(id);
+        regionRepository.save(checkDTO(dto));
         return dto;
     }
 
     private RegionEntity getById(Integer id) {
         return regionRepository.findById(id).orElse(null);
     }
+
+    public boolean delete(Integer id) {
+        RegionEntity entity = getById(id);
+        if (entity == null) {
+            throw new RuntimeException("entity is null");
+        }
+        entity.setVisible(false);
+        return true;
+    }
+
+    public List<RegionDTO> getAll() {
+        Iterable<RegionEntity> iterable = regionRepository.findAll();
+        List<RegionDTO> resultList = new LinkedList<>();
+        iterable.forEach(entity -> {
+            resultList.add(entityToDTO(entity));
+        });
+        return resultList;
+    }
+
+    public List<RegionRequestDTO> getByLang(String lang) {
+        List<RegionRequestDTO> response = new LinkedList<>();
+        getAll().forEach(regionDTO -> {
+            RegionRequestDTO dto = new RegionRequestDTO();
+            if (lang.equals("uz")) {
+                dto.setName(regionDTO.getNameUz());
+                dto.setId(regionDTO.getId());
+                response.add(dto);
+            } else if (lang.equals("ru")) {
+                dto.setName(regionDTO.getNameRu());
+                dto.setId(regionDTO.getId());
+                response.add(dto);
+            } else if (lang.equals("en")) {
+                dto.setName(regionDTO.getNameEn());
+                dto.setId(regionDTO.getId());
+                response.add(dto);
+            }
+        });
+        return response;
+
+    }
+
 
     public RegionDTO entityToDTO(RegionEntity entity) {
         RegionDTO dto = new RegionDTO();
@@ -68,45 +105,5 @@ public class RegionService {
             entity.setNameEn(dto.getNameEn());
         }
         return entity;
-    }
-
-    public boolean delete(Integer id) {
-        RegionEntity entity = getById(id);
-        if (entity == null) {
-            throw new RuntimeException("entity is null");
-        }
-        entity.setVisible(false);
-        return true;
-    }
-
-    public List<RegionDTO> getAll() {
-        Iterable<RegionEntity> iterable = regionRepository.findAll();
-        List<RegionDTO> resultList = new LinkedList<>();
-        iterable.forEach(entity -> {
-            resultList.add(entityToDTO(entity));
-        });
-        return resultList;
-    }
-
-    public List<RegionRequestDTO> getByLang(String lang) {
-        List<RegionRequestDTO> response = new LinkedList<>();
-        getAll().forEach(articleTypeDTO -> {
-            RegionRequestDTO dto = new RegionRequestDTO();
-            if (lang.equals("uz")) {
-                dto.setName(articleTypeDTO.getNameUz());
-                dto.setId(articleTypeDTO.getId());
-                response.add(dto);
-            } else if (lang.equals("ru")) {
-                dto.setName(articleTypeDTO.getNameRu());
-                dto.setId(articleTypeDTO.getId());
-                response.add(dto);
-            } else if (lang.equals("en")) {
-                dto.setName(articleTypeDTO.getNameEn());
-                dto.setId(articleTypeDTO.getId());
-                response.add(dto);
-            }
-        });
-        return response;
-
     }
 }

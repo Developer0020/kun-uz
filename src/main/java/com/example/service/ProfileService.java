@@ -19,24 +19,22 @@ public class ProfileService {
     @Autowired
     private ProfileRepository profileRepository;
 
-    public ProfileDTO create(ProfileDTO dto, Integer id) {
+    public ProfileDTO create(ProfileDTO dto) {
         // check - homework
         isValidProfile(dto);
-
         ProfileEntity entity = DTOToEntity(dto);
         profileRepository.save(entity); // save profile
-
+        dto.setId(entity.getId());
         dto.setPassword(null);
-        dto.setId(id);
         return dto;
     }
-    public ProfileDTO update(ProfileDTO dto) {
-        if (getById(dto.getId()) == null) {
-            throw new RuntimeException("this user is null");
-        }
+
+    public ProfileDTO update(ProfileDTO dto,Integer id) {
+        dto.setId(id);
         profileRepository.save(checkDTO(dto));
         return dto;
     }
+
     public ProfileDTO updateDetail(ProfileDTO dto, Integer id) {
         if (getById(dto.getId()) == null) {
             throw new RuntimeException("this user is null");
@@ -48,9 +46,11 @@ public class ProfileService {
         profileRepository.save(checkDTO(dto));
         return dto;
     }
+
     public ProfileEntity getById(Integer id) {
         return profileRepository.findById(id).orElse(null);
     }
+
     public List<ProfileDTO> getAll() {
         Iterable<ProfileEntity> iterable = profileRepository.findAll();
         List<ProfileDTO> dtoList = new LinkedList<>();
@@ -59,6 +59,7 @@ public class ProfileService {
         });
         return dtoList;
     }
+
     public boolean delete(Integer id) {
         ProfileEntity entity = getById(id);
         if (entity == null) {
@@ -80,8 +81,9 @@ public class ProfileService {
         dto.setSurname(entity.getSurname());
         return dto;
     }
+
     public ProfileEntity DTOToEntity(ProfileDTO dto) {
-        ProfileEntity entity = getById(dto.getId());
+        ProfileEntity entity = new ProfileEntity();
         entity.setName(dto.getName());
         entity.setSurname(dto.getSurname());
         entity.setPhone(dto.getPhone());
@@ -91,6 +93,7 @@ public class ProfileService {
         entity.setStatus(GeneralStatus.ACTIVE);
         return entity;
     }
+
     public ProfileEntity checkDTO(ProfileDTO dto) {
         ProfileEntity entity = getById(dto.getId());
         if (!dto.getEmail().isBlank() || dto.getEmail() != null) {
@@ -113,6 +116,7 @@ public class ProfileService {
         }
         return entity;
     }
+
     public void isValidProfile(ProfileDTO dto) {
         // throw ...
     }

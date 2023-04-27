@@ -1,9 +1,8 @@
 package com.example.controller;
 
-import com.example.dto.ArticleTypeDTO;
-import com.example.dto.ArticleTypeRequestDTO;
+import com.example.dto.articleType.ArticleTypeDTO;
+import com.example.dto.articleType.ArticleTypeRequestDTO;
 import com.example.dto.JwtDTO;
-import com.example.dto.ProfileDTO;
 import com.example.enums.ProfileRole;
 import com.example.exception.MethodNotAllowedException;
 import com.example.service.ArticleTypeService;
@@ -19,11 +18,12 @@ import java.util.List;
 public class ArticleTypeController {
     @Autowired
     private ArticleTypeService articleTypeService;
+    private Container container=new Container();
 
     @PostMapping("")
     public ResponseEntity<ArticleTypeDTO> create(@RequestBody ArticleTypeDTO dto,
                                                  @RequestHeader("Authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+        JwtDTO jwtDTO = container.authorization(authorization);
         if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
             throw new MethodNotAllowedException("Method not allowed !!!");
         }
@@ -34,7 +34,7 @@ public class ArticleTypeController {
     public ResponseEntity<ArticleTypeDTO> update(@PathVariable("id") Integer id,
                                                  @RequestBody ArticleTypeDTO dto,
                                                  @RequestHeader("authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+        JwtDTO jwtDTO = container.authorization(authorization);
         if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
             throw new MethodNotAllowedException("Method not allowed");
         }
@@ -43,7 +43,7 @@ public class ArticleTypeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") Integer id,
                                         @RequestHeader("Authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+        JwtDTO jwtDTO = container.authorization(authorization);
         if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
             throw new MethodNotAllowedException("method not allowed !");
         }
@@ -52,14 +52,14 @@ public class ArticleTypeController {
 
     @GetMapping("")
     public ResponseEntity<List<ArticleTypeDTO>> getAll(@RequestHeader("Authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+        JwtDTO jwtDTO = container.authorization(authorization);
         if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
             throw new MethodNotAllowedException("method not allowed !");
         }
         return ResponseEntity.ok(articleTypeService.getAll());
     }
 
-    @GetMapping("get-by-lang") ///uz,ru,en
+    @GetMapping("/get-by-lang") ///uz,ru,en
     private ResponseEntity<List<ArticleTypeRequestDTO>>getByLang(@RequestParam("lang")String lang){
         return ResponseEntity.ok(articleTypeService.getByLang(lang));
     }

@@ -1,0 +1,32 @@
+### create article-type
+POST localhost:8081/article-type
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTMyNjcsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzk2NjcsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.LPkTaTw3SPthjzi9l0DFPRee-kJHP8EFRpfXhfOP5JvvWeKXwLGbUKG8gnVYC8bZhKJ9F_Umkzo1_x-6rJr3Hg
+
+{
+  "nameUz": "Buxoro",
+  "nameRu": "Бухара",
+  "nameEn": "Bukhara"
+}
+
+### update
+POST localhost:8081/article-type/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTMyNjcsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzk2NjcsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.LPkTaTw3SPthjzi9l0DFPRee-kJHP8EFRpfXhfOP5JvvWeKXwLGbUKG8gnVYC8bZhKJ9F_Umkzo1_x-6rJr3Hg
+
+{
+  "nameUz": "aa",
+  "nameRu": "Бухара",
+  "nameEn": "Bukhara"
+}
+
+### delete
+DELETE localhost:8081/article-type/1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTMyNjcsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzk2NjcsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.LPkTaTw3SPthjzi9l0DFPRee-kJHP8EFRpfXhfOP5JvvWeKXwLGbUKG8gnVYC8bZhKJ9F_Umkzo1_x-6rJr3Hg
+
+### get all
+GET localhost:8081/article-type
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTMyNjcsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzk2NjcsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.LPkTaTw3SPthjzi9l0DFPRee-kJHP8EFRpfXhfOP5JvvWeKXwLGbUKG8gnVYC8bZhKJ9F_Umkzo1_x-6rJr3Hg
+
+### get-by-lang
+GET localhost:8081/article-type?lang=uz

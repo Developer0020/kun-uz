@@ -21,9 +21,9 @@ public class RegionEntity {
     @Column(name = "name_en")
     private String nameEn;
     @Column(name = "visible")
-    private Boolean visible;
+    private Boolean visible=Boolean.TRUE;
     @Column(name = "created_date")
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate=LocalDateTime.now();
     ///id,key,name_uz, name_ru, name_en,visible,created_date
 
 

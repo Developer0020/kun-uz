@@ -1,14 +1,9 @@
 package com.example.service;
 
-import com.example.dto.ArticleTypeDTO;
-import com.example.dto.ArticleTypeRequestDTO;
-import com.example.dto.ProfileDTO;
+import com.example.dto.articleType.ArticleTypeDTO;
+import com.example.dto.articleType.ArticleTypeRequestDTO;
 import com.example.entity.ArticleTypeEntity;
-import com.example.entity.ProfileEntity;
-import com.example.enums.GeneralStatus;
 import com.example.repository.ArticleTypeRepository;
-import com.example.util.JwtUtil;
-import com.example.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +16,9 @@ public class ArticleTypeService {
     private ArticleTypeRepository articleTypeRepository;
 
     public ArticleTypeDTO create(ArticleTypeDTO dto) {
-        if (getById(dto.getId()) != null) {
-            throw new RuntimeException(" not null ");
-        }
-        articleTypeRepository.save(DTOToEntity(dto));
+        ArticleTypeEntity entity = DTOToEntity(dto);
+        articleTypeRepository.save(entity);
+        dto.setId(entity.getId());
         return dto;
     }
 
@@ -32,8 +26,8 @@ public class ArticleTypeService {
         if (getById(id) == null) {
             throw new RuntimeException("this articleType is null");
         }
-        articleTypeRepository.save(checkDTO(dto));
         dto.setId(id);
+        articleTypeRepository.save(checkDTO(dto));
         return dto;
     }
 
@@ -79,6 +73,7 @@ public class ArticleTypeService {
             throw new RuntimeException("entity is null");
         }
         entity.setVisible(false);
+        articleTypeRepository.save(entity);
         return true;
     }
 

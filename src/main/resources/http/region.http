@@ -1,0 +1,33 @@
+### create region
+POST localhost:8081/region
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTI2NDEsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzkwNDEsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.ktHPLTptbXzTLoFEbjgc_t15wO8gHB3PhOwgZRoRkvE_awsCStCEb7EsPNysLe2WFOofKCVJyNBun8aX53ukcw
+
+{
+  "nameUz": "Buxoro",
+  "nameRu": "Бухара",
+  "nameEn": "Bukhara"
+}
+
+### update region
+POST localhost:8081/region/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTI3NzYsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzkxNzYsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.K1ExoESYwxNN88bYVVfKzIJsI36JBpJFwOe_0fMrqO5wpxPh-ZH6rqGPSaeAsiBvDXo_dvjR8n0jlVoHg4nEdQ
+
+{
+  "nameUz": "Andijon",
+  "nameRu": "Бухара",
+  "nameEn": "Bukhara"
+}
+
+### get all
+GET localhost:8081/region
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTI3NzYsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzkxNzYsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.K1ExoESYwxNN88bYVVfKzIJsI36JBpJFwOe_0fMrqO5wpxPh-ZH6rqGPSaeAsiBvDXo_dvjR8n0jlVoHg4nEdQ
+
+###get-by-lang
+GET localhost:8081/region/get-by-lang?lang=ru
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTI3NzYsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzkxNzYsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.K1ExoESYwxNN88bYVVfKzIJsI36JBpJFwOe_0fMrqO5wpxPh-ZH6rqGPSaeAsiBvDXo_dvjR8n0jlVoHg4nEdQ
+
+### delete region
+DELETE localhost:8081/region/1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTI3NzYsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzkxNzYsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.K1ExoESYwxNN88bYVVfKzIJsI36JBpJFwOe_0fMrqO5wpxPh-ZH6rqGPSaeAsiBvDXo_dvjR8n0jlVoHg4nEdQ

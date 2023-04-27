@@ -1,6 +1,8 @@
 package com.example.controller;
 
 import com.example.dto.*;
+import com.example.dto.region.RegionDTO;
+import com.example.dto.region.RegionRequestDTO;
 import com.example.enums.ProfileRole;
 import com.example.exception.MethodNotAllowedException;
 import com.example.service.RegionService;
@@ -16,10 +18,12 @@ import java.util.List;
 public class RegionController {
     @Autowired
     private RegionService regionService;
+    private Container container = new Container();
+
     @PostMapping("")
     public ResponseEntity<RegionDTO> create(@RequestBody RegionDTO dto,
-                                                 @RequestHeader("Authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+                                            @RequestHeader("Authorization") String authorization) {
+        JwtDTO jwtDTO = container.authorization(authorization);
         if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
             throw new MethodNotAllowedException("Method not allowed !!!");
         }
@@ -28,18 +32,19 @@ public class RegionController {
 
     @PostMapping("/{id}")
     public ResponseEntity<RegionDTO> update(@PathVariable("id") Integer id,
-                                                 @RequestBody RegionDTO dto,
-                                                 @RequestHeader("authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+                                            @RequestBody RegionDTO dto,
+                                            @RequestHeader("authorization") String authorization) {
+        JwtDTO jwtDTO = container.authorization(authorization);
         if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
             throw new MethodNotAllowedException("Method not allowed");
         }
-        return ResponseEntity.ok(regionService.update(dto,id));
+        return ResponseEntity.ok(regionService.update(dto, id));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") Integer id,
                                         @RequestHeader("Authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+        JwtDTO jwtDTO = container.authorization(authorization);
         if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
             throw new MethodNotAllowedException("method not allowed !");
         }
@@ -48,7 +53,7 @@ public class RegionController {
 
     @GetMapping("")
     public ResponseEntity<List<RegionDTO>> getAll(@RequestHeader("Authorization") String authorization) {
-        JwtDTO jwtDTO = Container.authorization(authorization);
+        JwtDTO jwtDTO = container.authorization(authorization);
         if (!jwtDTO.getRole().equals(ProfileRole.ADMIN)) {
             throw new MethodNotAllowedException("method not allowed !");
         }
@@ -56,7 +61,7 @@ public class RegionController {
     }
 
     @GetMapping("get-by-lang") ///uz,ru,en
-    private ResponseEntity<List<RegionRequestDTO>>getByLang(@RequestParam("lang")String lang){
+    private ResponseEntity<List<RegionRequestDTO>> getByLang(@RequestParam("lang") String lang) {
         return ResponseEntity.ok(regionService.getByLang(lang));
     }
 }

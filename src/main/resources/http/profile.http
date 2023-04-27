@@ -1,14 +1,36 @@
 ### Create profle
 POST localhost:8081/api/v1/profile
 Content-Type:  application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE3MjI4NDIsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODE4MDkyNDIsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.HZ_HrWnqS41WJV8TfWfhUk-9Q1KmWKcuIf4-hwPR4a3o-MztksgE6vXoJYuWPdWJ-CpJfP6E6z4FiLP_XuNRRw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTE0MDAsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzc4MDAsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9._78vqzfMCn-K8z0cWMAQnvrmWq230vguQ7pUgEcn0AlcPP9ORessxiBxjJhgBXhGVU1fYU4Uu41PpoYh3dTukw
 
 {
-  "name": "Alish",
+  "name": "valish",
   "surname": "Aliyev",
-  "email": "alish@mail.ru",
-  "phone": "1213",
-  "password": "123456",
+  "email": "Valish@mail.ru",
+  "phone": "11111",
+  "password": "1234567",
   "role": "MODERATOR"
 }
+
+### update
+POST localhost:8081/api/v1/profile/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTM4MTMsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwODAyMTMsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.yEiCrc63Gjoc8S3PHjfgsZ99ZS6ptLye6XMfRsU2T0FN_g-v5L8XKswKQ5uX1nBbqr5qWPvd08yOzojTXNsI4A
+
+{
+  "name": "vali",
+  "surname": "Aliyev",
+  "email": "Valish@mail.ru",
+  "phone": "11111",
+  "password": "1234567",
+  "role": "MODERATOR"
+}
+
+### get all
+GET localhost:8081/api/v1/profile
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTM4MTMsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwODAyMTMsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.yEiCrc63Gjoc8S3PHjfgsZ99ZS6ptLye6XMfRsU2T0FN_g-v5L8XKswKQ5uX1nBbqr5qWPvd08yOzojTXNsI4A
+
+### delete
+DELETE localhost:8081/api/v1/profile/1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTM4MTMsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwODAyMTMsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.yEiCrc63Gjoc8S3PHjfgsZ99ZS6ptLye6XMfRsU2T0FN_g-v5L8XKswKQ5uX1nBbqr5qWPvd08yOzojTXNsI4A
 

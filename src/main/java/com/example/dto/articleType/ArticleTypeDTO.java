@@ -1,4 +1,4 @@
-package com.example.dto;
+package com.example.dto.articleType;
 
 import jakarta.persistence.Column;
 import lombok.Getter;

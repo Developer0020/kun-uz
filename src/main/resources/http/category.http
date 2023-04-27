@@ -1,0 +1,33 @@
+### create category
+POST localhost:8081/category
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTE3MDAsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzgxMDAsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.8fCyOyy4OVTuwhYK-3O18hmsAsnDQrha78dyBpD5xCcA94D_KUzQXX8uq-zeMGQEwgok4W26LsIHaGwwGsgbQw
+
+{
+  "nameUz": "so'z",
+  "nameRu": "слово",
+  "nameEn": "word"
+}
+
+### update category
+POST localhost:8081/category/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTE5ODEsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzgzODEsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.I2JJDnpwhE7lXm3krTycZ5JM1Q9vzCiAq137Vs7XW1hL5EM2XOP90EnlJTdD0lmeo00c2-rJCiNhwOYqMpodEQ
+
+{
+  "nameUz": "soz",
+  "nameRu": "слово",
+  "nameEn": "word"
+}
+
+### delete category
+DELETE localhost:8081/category/1
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTE5ODEsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzgzODEsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.I2JJDnpwhE7lXm3krTycZ5JM1Q9vzCiAq137Vs7XW1hL5EM2XOP90EnlJTdD0lmeo00c2-rJCiNhwOYqMpodEQ
+
+### get all
+GET localhost:8081/category
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTE5ODEsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzgzODEsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.I2JJDnpwhE7lXm3krTycZ5JM1Q9vzCiAq137Vs7XW1hL5EM2XOP90EnlJTdD0lmeo00c2-rJCiNhwOYqMpodEQ
+
+### get-by-lang
+GET localhost:8081/category/get-by-lang?lang=uz
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2ODE5OTE5ODEsImlkIjoxLCJyb2xlIjoiQURNSU4iLCJleHAiOjE2ODIwNzgzODEsImlzcyI6Ikt1bnV6IHRlc3QgcG9ydGFsaSJ9.I2JJDnpwhE7lXm3krTycZ5JM1Q9vzCiAq137Vs7XW1hL5EM2XOP90EnlJTdD0lmeo00c2-rJCiNhwOYqMpodEQ
