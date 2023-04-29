@@ -4,6 +4,7 @@ import com.example.dto.EmailHistoryDTO;
 import com.example.entity.EmailHistoryEntity;
 import com.example.repository.EmailHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class EmailHistoryService {
         });
         return responseDTOList;
     }
+
     public List<EmailHistoryDTO> getByGivenDates(String date) {
         List<EmailHistoryDTO> responseDTOList = new LinkedList<>();
         LocalDateTime time = LocalDateTime.of(LocalDate.parse(date), LocalTime.MIN);
@@ -42,4 +44,16 @@ public class EmailHistoryService {
         return dto;
     }
 
+    public Page<EmailHistoryDTO> paging(int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdDate");
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        Page<EmailHistoryEntity> entityPage = emailHistoryRepository.findAll(pageable);
+        Long totalCount = entityPage.getTotalElements();
+
+        List<EmailHistoryDTO> responseDTOList = new LinkedList<>();
+        entityPage.getContent().forEach(entity -> {
+            responseDTOList.add(entityToDTO(entity));
+        });
+        return new PageImpl<EmailHistoryDTO>(responseDTOList, pageable, totalCount);
+    }
 }

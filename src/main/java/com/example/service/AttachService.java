@@ -1,9 +1,14 @@
 package com.example.service;
 
+import com.example.dto.AttachDTO;
 import com.example.entity.AttachEntity;
 import com.example.exception.ItemNotFoundException;
 import com.example.repository.AttachRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,11 +17,14 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.hibernate.Hibernate.get;
@@ -25,41 +33,67 @@ import static org.hibernate.Hibernate.get;
 public class AttachService {
     @Autowired
     private AttachRepository attachRepository;
-    public String saveToSystem(MultipartFile file) {
+
+    public byte[] openById(String id) {
+        byte data[];
         try {
-            File folder = new File("attaches");
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get("attaches/" + file.getOriginalFilename());
-            // attaches/test_imge_1.jpg
-            Files.write(path, bytes);
-            return file.getOriginalFilename();
+            AttachEntity attachEntity = get(id);
+            Path file = Paths.get("attaches/"+attachEntity.getPath()+id+attachEntity.getExtension());
+            data = Files.readAllBytes(file);
+            return data;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return new byte[0];
     }
-    public String saveToSystem2(MultipartFile file) {
+    public byte[] open_general(String attachName) {
+        byte[] data;
         try {
-            File folder = new File("attaches");
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
-            byte[] bytes = file.getBytes();
-            String extension = getExtension(file.getOriginalFilename());
-            String fileName = UUID.randomUUID().toString();
-            Path path = Paths.get("attaches/" + fileName + "." + extension);
-            // attaches/test_imge_1.jpg
-            // attaches/uuid().jpg
-            Files.write(path, bytes);
-            return fileName + "." + extension;
+            Path file = Paths.get("attaches/" + attachName);
+            data = Files.readAllBytes(file);
+            return data;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return new byte[0];
     }
+
+//    public String saveToSystem1(MultipartFile file) {
+//        try {
+//            File folder = new File("attaches");
+//            if (!folder.exists()) {
+//                folder.mkdir();
+//            }
+//            byte[] bytes = file.getBytes();
+//            Path path = Paths.get("attaches/" + file.getOriginalFilename());
+//            // attaches/test_imge_1.jpg
+//            Files.write(path, bytes);
+//            return file.getOriginalFilename();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+//
+//    public String saveToSystem2(MultipartFile file) {
+//        try {
+//            File folder = new File("attaches");
+//            if (!folder.exists()) {
+//                folder.mkdir();
+//            }
+//            byte[] bytes = file.getBytes();
+//            String extension = getExtension(file.getOriginalFilename());
+//            String fileName = UUID.randomUUID().toString();
+//            Path path = Paths.get("attaches/" + fileName + "." + extension);
+//            // attaches/test_imge_1.jpg
+//            // attaches/uuid().jpg
+//            Files.write(path, bytes);
+//            return fileName + "." + extension;
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     public String getExtension(String fileName) { // mp3/jpg/npg/mp4.....
         int lastIndex = fileName.lastIndexOf(".");
@@ -81,18 +115,7 @@ public class AttachService {
             return new byte[0];
         }
     }
-    public byte[] open_general(String attachName) {
-        byte[] data;
-        try {
-            Path file = Paths.get("attaches/" + attachName);
-            data = Files.readAllBytes(file);
-            return data;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new byte[0];
-    }
-    public String saveToSystem3(MultipartFile file) {
+    public String saveToSystem(MultipartFile file) {
         try {
             String pathFolder = getYmDString(); // 2022/04/23
             File folder = new File("attaches/" + pathFolder);  // attaches/2023/04/26
@@ -130,7 +153,7 @@ public class AttachService {
     public byte[] open_general2(String attachName) {
         // 20f0f915-93ec-4099-97e3-c1cb7a95151f.jpg
         int lastIndex = attachName.lastIndexOf(".");
-        String id = attachName.substring(0,lastIndex);
+        String id = attachName.substring(0, lastIndex);
         AttachEntity attachEntity = get(id);
         byte[] data;
         try {                                                     // attaches/2023/4/25/20f0f915-93ec-4099-97e3-c1cb7a95151f.jpg
@@ -147,6 +170,39 @@ public class AttachService {
             throw new ItemNotFoundException("Attach not ound");
         });
     }
+    public Resource download(String id) {
+        try {
+            AttachEntity attachEntity = get(id);
+            Path file = Paths.get("attaches/" + attachEntity.getPath() + "/" + id + "." + attachEntity.getExtension());
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() || resource.isReadable()) {
+                return resource;
+            } else {
+                throw new RuntimeException("Could not read the file!");
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
+    }
+    public Page<AttachDTO> pagination(int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdDate");
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<AttachEntity> pageObj = attachRepository.findAll(pageable);
+        Long totalCount = pageObj.getTotalElements();
+        List<AttachEntity> entityList = pageObj.getContent();
+        List<AttachDTO> dtoList = new LinkedList<>();
+        for (AttachEntity entity : entityList) {
+            AttachDTO dto = new AttachDTO();
+            dto.setSize(entity.getSize());
+            dto.setPath(entity.getPath());
+            dto.setExtension(entity.getExtension());
+            dto.setId(entity.getId());
+            dto.setCreatedData(entity.getCreatedData());
+            dtoList.add(dto);
+        }
 
+        Page<AttachDTO> dtoPage = new PageImpl<>(dtoList, pageable, totalCount);
+        return dtoPage;
+    }
 
 }

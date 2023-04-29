@@ -1,39 +1,60 @@
 package com.example.service;
 
 import com.example.dto.ProfileDTO;
+import com.example.dto.ProfileFilterRequestDTO;
 import com.example.entity.ProfileEntity;
 import com.example.enums.GeneralStatus;
+import com.example.exception.ItemNotFoundException;
 import com.example.exception.MethodNotAllowedException;
+import com.example.repository.ProfileCustomRepository;
 import com.example.repository.ProfileRepository;
 import com.example.util.MD5Util;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 @Service
+@AllArgsConstructor
 public class ProfileService {
-    @Autowired
-    private ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
+    private final ProfileCustomRepository profileCustomRepository;
 
     public ProfileDTO create(ProfileDTO dto) {
         // check - homework
         isValidProfile(dto);
-        ProfileEntity entity = DTOToEntity(dto);
+        ProfileEntity entity = toEntity(dto);
         profileRepository.save(entity); // save profile
         dto.setId(entity.getId());
         dto.setPassword(null);
         return dto;
     }
 
-    public ProfileDTO update(ProfileDTO dto,Integer id) {
+    public ProfileDTO update(ProfileDTO dto, Integer id) {
         dto.setId(id);
         profileRepository.save(checkDTO(dto));
         return dto;
     }
+
+    public ProfileDTO get(Integer id) {
+        ProfileEntity entity = getById(id);
+        ProfileDTO dto = new ProfileDTO();
+        dto.setId(entity.getId());
+        dto.setPhone(entity.getPhone());
+        dto.setName(entity.getName());
+        dto.setSurname(entity.getSurname());
+        dto.setEmail(entity.getEmail());
+        return dto;
+    }
+    public ProfileEntity getById(Integer id) {
+        ProfileEntity entity = profileRepository.findById(id).orElse(null);
+        if (entity == null) {
+            throw new ItemNotFoundException("item not found");
+        }
+        return entity;
+    }
+
 
     public ProfileDTO updateDetail(ProfileDTO dto, Integer id) {
         if (getById(dto.getId()) == null) {
@@ -46,20 +67,14 @@ public class ProfileService {
         profileRepository.save(checkDTO(dto));
         return dto;
     }
-
-    public ProfileEntity getById(Integer id) {
-        return profileRepository.findById(id).orElse(null);
-    }
-
     public List<ProfileDTO> getAll() {
         Iterable<ProfileEntity> iterable = profileRepository.findAll();
         List<ProfileDTO> dtoList = new LinkedList<>();
         iterable.forEach(profileEntity -> {
-            dtoList.add(entityToDTO(profileEntity));
+            dtoList.add(toDTO(profileEntity));
         });
         return dtoList;
     }
-
     public boolean delete(Integer id) {
         ProfileEntity entity = getById(id);
         if (entity == null) {
@@ -69,8 +84,7 @@ public class ProfileService {
         profileRepository.save(entity);
         return true;
     }
-
-    public ProfileDTO entityToDTO(ProfileEntity entity) {
+    public ProfileDTO toDTO(ProfileEntity entity) {
         ProfileDTO dto = new ProfileDTO();
         dto.setId(entity.getId());
         dto.setEmail(entity.getEmail());
@@ -81,8 +95,7 @@ public class ProfileService {
         dto.setSurname(entity.getSurname());
         return dto;
     }
-
-    public ProfileEntity DTOToEntity(ProfileDTO dto) {
+    public ProfileEntity toEntity(ProfileDTO dto) {
         ProfileEntity entity = new ProfileEntity();
         entity.setName(dto.getName());
         entity.setSurname(dto.getSurname());
@@ -93,7 +106,6 @@ public class ProfileService {
         entity.setStatus(GeneralStatus.ACTIVE);
         return entity;
     }
-
     public ProfileEntity checkDTO(ProfileDTO dto) {
         ProfileEntity entity = getById(dto.getId());
         if (!dto.getEmail().isBlank() || dto.getEmail() != null) {
@@ -116,10 +128,17 @@ public class ProfileService {
         }
         return entity;
     }
-
     public void isValidProfile(ProfileDTO dto) {
         // throw ...
     }
 
+    public List<ProfileDTO> filter(ProfileFilterRequestDTO filterRequestDTO) {
+        List<ProfileEntity> entityList = profileCustomRepository.filter(filterRequestDTO);
+        List<ProfileDTO> dtoList = new LinkedList<>();
+        for (ProfileEntity entity : entityList) {
+            dtoList.add(toDTO(entity));
+        }
+        return dtoList;
+    }
 
 }

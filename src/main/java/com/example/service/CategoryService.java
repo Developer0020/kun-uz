@@ -3,58 +3,27 @@ package com.example.service;
 import com.example.dto.category.CategoryDTO;
 import com.example.dto.category.CategoryRequestDTO;
 import com.example.entity.CategoryEntity;
+import com.example.exception.ItemNotFoundException;
 import com.example.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CategoryService {
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     public CategoryDTO create(CategoryDTO dto) {
-        CategoryEntity entity = DTOToEntity(dto);
+        CategoryEntity entity = toEntity(dto);
         categoryRepository.save(entity);
         dto.setId(entity.getId());
         return dto;
     }
-
-    public CategoryDTO update(CategoryDTO dto, Integer id) {
-        if (getById(id) == null) {
-            throw new RuntimeException("this category is null");
-        }
-        dto.setId(id);
-        categoryRepository.save(checkDTO(dto));
-        return dto;
-    }
-
-    private CategoryEntity getById(Integer id) {
-        return categoryRepository.findById(id).orElse(null);
-    }
-
-
-    public CategoryDTO entityToDTO(CategoryEntity entity) {
-        CategoryDTO dto = new CategoryDTO();
-        dto.setId(entity.getId());
-        dto.setNameUz(entity.getNameUz());
-        dto.setNameRu(entity.getNameRu());
-        dto.setNameEn(entity.getNameEn());
-        return dto;
-    }
-
-    public CategoryEntity DTOToEntity(CategoryDTO dto) {
-        CategoryEntity entity = new CategoryEntity();
-        entity.setNameEn(dto.getNameEn());
-        entity.setNameRu(dto.getNameRu());
-        entity.setNameUz(dto.getNameUz());
-        return entity;
-    }
-
-    public CategoryEntity checkDTO(CategoryDTO dto) {
-        CategoryEntity entity = getById(dto.getId());
+    public String update(CategoryDTO dto, Integer id) {
+        CategoryEntity entity = getById(id);
         if (!dto.getNameUz().isBlank() || dto.getNameUz() != null) {
             entity.setNameUz(dto.getNameUz());
         }
@@ -64,44 +33,63 @@ public class CategoryService {
         if (!dto.getNameEn().isBlank() || dto.getNameEn() != null) {
             entity.setNameEn(dto.getNameEn());
         }
+        categoryRepository.save(entity);
+        return "Successful updated !!!";
+    }
+    private CategoryEntity getById(Integer id) {
+        CategoryEntity entity = categoryRepository.findById(id).orElse(null);
+        if (entity == null) {
+            throw new ItemNotFoundException("item not found");
+        }
         return entity;
     }
-
+    public CategoryDTO toDTO(CategoryEntity entity) {
+        CategoryDTO dto = new CategoryDTO();
+        dto.setId(entity.getId());
+        dto.setNameUz(entity.getNameUz());
+        dto.setNameRu(entity.getNameRu());
+        dto.setNameEn(entity.getNameEn());
+        return dto;
+    }
+    public CategoryEntity toEntity(CategoryDTO dto) {
+        CategoryEntity entity = new CategoryEntity();
+        entity.setNameEn(dto.getNameEn());
+        entity.setNameRu(dto.getNameRu());
+        entity.setNameUz(dto.getNameUz());
+        return entity;
+    }
     public boolean delete(Integer id) {
         CategoryEntity entity = getById(id);
-        if (entity == null) {
-            throw new RuntimeException("entity is null");
-        }
         entity.setVisible(false);
         categoryRepository.save(entity);
         return true;
     }
-
     public List<CategoryDTO> getAll() {
         Iterable<CategoryEntity> iterable = categoryRepository.findAll();
         List<CategoryDTO> resultList = new LinkedList<>();
-        iterable.forEach(entity -> {
-            resultList.add(entityToDTO(entity));
-        });
+        iterable.forEach(entity -> resultList.add(toDTO(entity)));
         return resultList;
     }
-
     public List<CategoryRequestDTO> getByLang(String lang) {
         List<CategoryRequestDTO> response = new LinkedList<>();
         getAll().forEach(categoryDTO -> {
             CategoryRequestDTO dto = new CategoryRequestDTO();
-            if (lang.equals("uz")) {
-                dto.setName(categoryDTO.getNameUz());
-                dto.setId(categoryDTO.getId());
-                response.add(dto);
-            } else if (lang.equals("ru")) {
-                dto.setName(categoryDTO.getNameRu());
-                dto.setId(categoryDTO.getId());
-                response.add(dto);
-            } else if (lang.equals("en")) {
-                dto.setName(categoryDTO.getNameEn());
-                dto.setId(categoryDTO.getId());
-                response.add(dto);
+            switch (lang) {
+                case "uz" -> {
+                    dto.setName(categoryDTO.getNameUz());
+                    dto.setId(categoryDTO.getId());
+                    response.add(dto);
+                }
+                case "ru" -> {
+                    dto.setName(categoryDTO.getNameRu());
+                    dto.setId(categoryDTO.getId());
+                    response.add(dto);
+                }
+                case "en" -> {
+                    dto.setName(categoryDTO.getNameEn());
+                    dto.setId(categoryDTO.getId());
+                    response.add(dto);
+                }
             }
         });
         return response;
