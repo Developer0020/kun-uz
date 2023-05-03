@@ -1,7 +1,7 @@
 package com.example.service;
 
-import com.example.dto.ProfileDTO;
-import com.example.dto.ProfileFilterRequestDTO;
+import com.example.dto.profile.ProfileDTO;
+import com.example.dto.profile.ProfileFilterRequestDTO;
 import com.example.entity.ProfileEntity;
 import com.example.enums.GeneralStatus;
 import com.example.exception.ItemNotFoundException;

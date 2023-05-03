@@ -1,8 +1,8 @@
 package com.example.controller;
 
-import com.example.dto.JwtDTO;
-import com.example.dto.ProfileDTO;
-import com.example.dto.ProfileFilterRequestDTO;
+import com.example.dto.jwt.JwtDTO;
+import com.example.dto.profile.ProfileDTO;
+import com.example.dto.profile.ProfileFilterRequestDTO;
 import com.example.enums.ProfileRole;
 import com.example.service.ProfileService;
 import com.example.util.JwtUtil;

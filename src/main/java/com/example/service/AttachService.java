@@ -1,11 +1,12 @@
 package com.example.service;
 
-import com.example.dto.AttachDTO;
+import com.example.dto.attach.AttachDTO;
 import com.example.entity.AttachEntity;
 import com.example.exception.ItemNotFoundException;
 import com.example.repository.AttachRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.*;
@@ -31,6 +32,8 @@ import static org.hibernate.Hibernate.get;
 
 @Service
 public class AttachService {
+    @Value("${server.host}")
+    private String serverHost;
     @Autowired
     private AttachRepository attachRepository;
 
@@ -38,7 +41,7 @@ public class AttachService {
         byte data[];
         try {
             AttachEntity attachEntity = get(id);
-            Path file = Paths.get("attaches/"+attachEntity.getPath()+id+attachEntity.getExtension());
+            Path file = Paths.get("attaches/" + attachEntity.getPath() + id + attachEntity.getExtension());
             data = Files.readAllBytes(file);
             return data;
         } catch (IOException e) {
@@ -46,6 +49,7 @@ public class AttachService {
         }
         return new byte[0];
     }
+
     public byte[] open_general(String attachName) {
         byte[] data;
         try {
@@ -99,6 +103,7 @@ public class AttachService {
         int lastIndex = fileName.lastIndexOf(".");
         return fileName.substring(lastIndex + 1);
     }
+
     public byte[] loadImage(String fileName) {
         byte[] imageInByte;
 
@@ -115,7 +120,8 @@ public class AttachService {
             return new byte[0];
         }
     }
-    public String saveToSystem(MultipartFile file) {
+
+    public AttachDTO saveToSystem(MultipartFile file) {
         try {
             String pathFolder = getYmDString(); // 2022/04/23
             File folder = new File("attaches/" + pathFolder);  // attaches/2023/04/26
@@ -137,12 +143,19 @@ public class AttachService {
             Path path = Paths.get("attaches/" + pathFolder + "/" + attachEntity.getId() + "." + extension);
             // attaches/2023/04/26/uuid().jpg
             Files.write(path, bytes);
-            return attachEntity.getId() + "." + extension;
+
+            AttachDTO dto = new AttachDTO();
+            dto.setId(attachEntity.getId());
+            dto.setOriginalName(file.getOriginalFilename());
+            dto.setUrl(serverHost + "/api/v1/attach/open/" + attachEntity.getId() + "." + extension);
+
+            return dto;
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
+
     public String getYmDString() {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
@@ -150,6 +163,7 @@ public class AttachService {
 
         return year + "/" + month + "/" + day; // 2022/04/23
     }
+
     public byte[] open_general2(String attachName) {
         // 20f0f915-93ec-4099-97e3-c1cb7a95151f.jpg
         int lastIndex = attachName.lastIndexOf(".");
@@ -165,11 +179,28 @@ public class AttachService {
         }
         return new byte[0];
     }
+
+    public byte[] loadImage2(String attachId) {
+//        int lastIndex = attachName.lastIndexOf(".");
+//        String id = attachName.substring(0, lastIndex);
+        AttachEntity attachEntity = get(attachId);
+        byte[] data;
+        try {
+            Path file = Paths.get("attaches/" + attachEntity.getPath() + "/" + attachId + "." + attachEntity.getExtension());
+            data = Files.readAllBytes(file);
+            return data;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
+    }
+
     public AttachEntity get(String id) {
         return attachRepository.findById(id).orElseThrow(() -> {
             throw new ItemNotFoundException("Attach not ound");
         });
     }
+
     public Resource download(String id) {
         try {
             AttachEntity attachEntity = get(id);
@@ -184,9 +215,10 @@ public class AttachService {
             throw new RuntimeException("Error: " + e.getMessage());
         }
     }
+
     public Page<AttachDTO> pagination(int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdDate");
-        Pageable pageable = PageRequest.of(page - 1, size);
+        Pageable pageable = PageRequest.of(page - 1, size,sort);
         Page<AttachEntity> pageObj = attachRepository.findAll(pageable);
         Long totalCount = pageObj.getTotalElements();
         List<AttachEntity> entityList = pageObj.getContent();
@@ -203,6 +235,13 @@ public class AttachService {
 
         Page<AttachDTO> dtoPage = new PageImpl<>(dtoList, pageable, totalCount);
         return dtoPage;
+    }
+
+    public AttachDTO getAttachLink(String attachId) {
+        AttachDTO dto = new AttachDTO();
+        dto.setId(attachId);
+        dto.setUrl(serverHost + "/api/v1/attach/open/" + attachId);
+        return dto;
     }
 
 }

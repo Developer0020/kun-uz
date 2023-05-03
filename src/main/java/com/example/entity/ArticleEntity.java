@@ -4,6 +4,7 @@ package com.example.entity;
 import com.example.enums.ArticleStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @Table(name = "article")
 @Entity
+@NoArgsConstructor
 public class ArticleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,7 +32,7 @@ public class ArticleEntity {
     private Integer sharedCount = 0;
 
     @Column(name = "attach_id")
-    private Integer attachId;
+    private String attachId;
     @ManyToOne
     @JoinColumn(name = "attach_id", insertable = false, updatable = false)
     private AttachEntity attach;
@@ -60,7 +62,7 @@ public class ArticleEntity {
     @Column(name = "created_date")
     private LocalDateTime createdDate = LocalDateTime.now();
     @Column(name = "published_date")
-    private LocalDate publishedDate;
+    private LocalDateTime publishedDate;
     @Column(name = "visible")
     private Boolean visible = Boolean.TRUE;
     @Column(name = "view_count")
@@ -68,4 +70,11 @@ public class ArticleEntity {
     @ManyToOne
     @Column(name = "type_id")
     private ArticleTypeEntity articleType;
+    public ArticleEntity(String id, String title, String description, String attachId, LocalDateTime publishedDate) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.attachId = attachId;
+        this.publishedDate = publishedDate;
+    }
 }

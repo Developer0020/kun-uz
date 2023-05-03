@@ -1,6 +1,6 @@
 package com.example.repository;
 
-import com.example.dto.ProfileFilterRequestDTO;
+import com.example.dto.profile.ProfileFilterRequestDTO;
 import com.example.entity.ProfileEntity;
 import jakarta.persistence.EntityManager;
 

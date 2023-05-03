@@ -1,4 +1,4 @@
-package com.example.dto;
+package com.example.dto.profile;
 
 import com.example.enums.ProfileRole;
 import jakarta.validation.constraints.NotNull;

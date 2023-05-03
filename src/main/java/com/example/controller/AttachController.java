@@ -1,9 +1,8 @@
 package com.example.controller;
 
-import com.example.dto.AttachDTO;
+import com.example.dto.attach.AttachDTO;
 import com.example.service.AttachService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
@@ -19,9 +18,9 @@ public class AttachController {
     private AttachService attachService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file) {
-        String fileName = attachService.saveToSystem(file);
-        return ResponseEntity.ok().body(fileName);
+    public ResponseEntity<AttachDTO> upload(@RequestParam("file") MultipartFile file) {
+        AttachDTO dto = attachService.saveToSystem(file);
+        return ResponseEntity.ok().body(dto);
     }
 
     /*    2. Open (by id)

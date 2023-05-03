@@ -12,7 +12,6 @@ public class AdviceController  {
             CategoryNotFoundException.class, ItemNotFoundException.class,
             MethodNotAllowedException.class, RegionNotFoundException.class, ArticleNotFoundException.class,
             ProfileNotFoundException.class, AttachNotFoundException.class})
-
     public ResponseEntity<String> handleException(RuntimeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }

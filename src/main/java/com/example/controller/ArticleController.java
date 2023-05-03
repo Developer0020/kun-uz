@@ -1,7 +1,6 @@
 package com.example.controller;
 
-import com.example.dto.JwtDTO;
-import com.example.dto.article.ArticleDTO;
+import com.example.dto.jwt.JwtDTO;
 import com.example.dto.article.ArticleRequestDTO;
 import com.example.dto.article.ArticleShortInfoDTO;
 import com.example.enums.ArticleStatus;
@@ -9,7 +8,7 @@ import com.example.enums.ProfileRole;
 import com.example.service.ArticleService;
 import com.example.util.JwtUtil;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +16,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/article")
+@AllArgsConstructor
 public class ArticleController {
-    @Autowired
-    private ArticleService articleService;
-
+    private final ArticleService articleService;
 
     @PostMapping("")
     public ResponseEntity<ArticleRequestDTO> create(@RequestBody @Valid ArticleRequestDTO dto,
@@ -28,24 +26,21 @@ public class ArticleController {
         JwtDTO jwt = JwtUtil.getJwtDTO(authorization, ProfileRole.MODERATOR);
         return ResponseEntity.ok(articleService.create(dto, jwt.getId()));
     }
-
     @PostMapping("/{id}")
     public ResponseEntity<ArticleRequestDTO> update(@RequestBody ArticleRequestDTO dto,
                                                     @RequestHeader("Authorization") String authorization,
-                                                    @PathVariable("id") Integer id) {
+                                                    @PathVariable("id") String id) {
         JwtDTO jwt = JwtUtil.getJwtDTO(authorization, ProfileRole.MODERATOR);
-        return ResponseEntity.ok(articleService.update(dto, jwt.getId()));
+        return ResponseEntity.ok(articleService.update(dto, jwt.getId(),id));
     }
-
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id,
+    public ResponseEntity<?> delete(@PathVariable("id") String id,
                                     @RequestHeader("Authorization") String authorization) {
         JwtUtil.getJwtDTO(authorization, ProfileRole.MODERATOR);
         return ResponseEntity.ok(articleService.delete(id));
     }
-
     @PostMapping("/change-status/{id}")
-    public ResponseEntity<?> changeStatus(@PathVariable("id") Integer id,
+    public ResponseEntity<?> changeStatus(@PathVariable("id") String id,
                                           @RequestParam String status,
                                           @RequestHeader("Authorization") String authorization) {
         JwtUtil.getJwtDTO(authorization, ProfileRole.PUBLISHER);
@@ -66,9 +61,11 @@ public class ArticleController {
 
     /*    7. Get Last 8  Articles witch id not included in given list.
      */
-
     @PostMapping("/get-last-given-list")
     public ResponseEntity<List<ArticleShortInfoDTO>>getLast8(@RequestBody List<Integer> countList){
         return ResponseEntity.ok(articleService.getLastGivenList(countList));
     }
+//
+//    @GetMapping()
+//    public ResponseEntity<ArticleFullInfoDTO>
 }

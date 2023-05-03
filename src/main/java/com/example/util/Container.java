@@ -1,6 +1,6 @@
 package com.example.util;
 
-import com.example.dto.JwtDTO;
+import com.example.dto.jwt.JwtDTO;
 
 public class Container {
 
