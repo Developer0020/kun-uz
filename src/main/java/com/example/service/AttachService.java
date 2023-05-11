@@ -237,11 +237,11 @@ public class AttachService {
         return dtoPage;
     }
 
-    public AttachDTO getAttachLink(String attachId) {
-        AttachDTO dto = new AttachDTO();
-        dto.setId(attachId);
-        dto.setUrl(serverHost + "/api/v1/attach/open/" + attachId);
-        return dto;
+    public AttachEntity getAttachLink(String attachId) {
+        AttachEntity entity = new AttachEntity();
+        entity.setId(attachId);
+        entity.setPath(serverHost + "/api/v1/attach/open/" + attachId);
+        return entity;
     }
 
 }

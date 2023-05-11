@@ -4,9 +4,10 @@ import com.example.dto.article.ArticleFullInfoDTO;
 import com.example.dto.article.ArticleRequestDTO;
 import com.example.dto.article.ArticleShortInfoDTO;
 import com.example.entity.ArticleEntity;
+import com.example.entity.ArticleTypeEntity;
+import com.example.entity.RegionEntity;
 import com.example.enums.ArticleStatus;
 import com.example.exception.ArticleNotFoundException;
-import com.example.mapper.ArticleShortInfoMapper;
 import com.example.repository.ArticleRepository;
 import com.example.repository.CategoryRepository;
 import lombok.AllArgsConstructor;
@@ -21,11 +22,13 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class ArticleService {
-    @Value("${server.host}")
-    private String serverHost;
+//    @Value("${server.host}")
+//    private  String serverHost;
     private final ArticleRepository articleRepository;
     private final CategoryRepository categoryRepository;
     private final AttachService attachService;
+    private final ArticleTypeService articleTypeService;
+    private final RegionService regionService;
     public ArticleRequestDTO create(ArticleRequestDTO dto, Integer id) {
         ArticleEntity entity = toEntity(dto);
         articleRepository.save(entity);
@@ -88,7 +91,7 @@ public class ArticleService {
         return entity;
     }
     public List<ArticleShortInfoDTO> getLastByCount(Integer typeId, Integer count) {
-        List<ArticleEntity> entityList = articleRepository.articleShortInfo(typeId, ArticleStatus.PUBLISHED, count);
+        List<ArticleEntity> entityList = articleRepository.articleShortInfo(typeId, ArticleStatus.PUBLISHED.name(), count);
         List<ArticleShortInfoDTO> responseDTOList = new LinkedList<>();
         entityList.forEach(entity -> {
             responseDTOList.add(new ArticleShortInfoDTO
@@ -126,11 +129,11 @@ public class ArticleService {
         dto.setTitle(entity.getTitle());
         dto.setDescription(entity.getDescription());
         dto.setPublishedDate(entity.getPublishedDate());
-        dto.setAttach(attachService.getAttachLink(entity.getAttachId()));
+//        dto.setAttach(attachService.getAttachLink(entity.getAttachId()));
         return dto;
     }
     public List<ArticleShortInfoDTO> getLast5ByTypeId(Integer typeId) {
-        List<ArticleEntity> entityList = articleRepository.findTop5ByTypeIdAndStatusAndVisibleOrderByCreatedDateDesc(typeId,
+        List<ArticleEntity> entityList = articleRepository.findTop5ByArticleTypeIdAndStatusAndVisibleOrderByCreatedDateDesc(typeId,
                 ArticleStatus.PUBLISHED, true);
         List<ArticleShortInfoDTO> dtoList = new LinkedList<>();
         entityList.forEach(entity -> {
@@ -138,14 +141,36 @@ public class ArticleService {
         });
         return dtoList;
     }
-    public ArticleShortInfoDTO toArticleShortInfo(ArticleShortInfoMapper entity) {
+
+    public List<ArticleShortInfoDTO> get4ArticleByTypes(Integer typeId, String articleId) {
+        ArticleTypeEntity type = articleTypeService.getById(typeId);
+        List<ArticleEntity> entityList = articleRepository.findByTypeIdAndIdNot(type, articleId);
+        List<ArticleShortInfoDTO> dtoList = new LinkedList<>();
+        for (ArticleEntity entity : entityList) {
+            dtoList.add(toShortInfo(entity));
+        }
+        return dtoList;
+    }
+    public ArticleShortInfoDTO toShortInfo(ArticleEntity entity) {
         ArticleShortInfoDTO dto = new ArticleShortInfoDTO();
+        dto.setAttach(attachService.getAttachLink(entity.getAttachId()));
         dto.setId(entity.getId());
-        dto.setTitle(entity.getTitle());
+        dto.setPublishedDate(entity.getPublishedDate());
         dto.setDescription(entity.getDescription());
-        dto.setPublishedDate(entity.getPublished_date());
-        dto.setImage(attachService.getAttachLink(entity.getAttachId()));
+        dto.setTitle(entity.getTitle());
         return dto;
+    }
+
+
+    public List<ArticleShortInfoDTO> articleShortInfo(String type, String regionName) {
+        ArticleTypeEntity typeEntity = articleTypeService.get(type);
+        RegionEntity region = regionService.get(regionName);
+        List<ArticleEntity> entityList = articleRepository.findByTypeAndRegion(typeEntity, region);
+        List<ArticleShortInfoDTO> dtoList = new LinkedList<>();
+        for (ArticleEntity entity : entityList) {
+            dtoList.add(toShortInfo(entity));
+        }
+        return dtoList;
     }
 
 }

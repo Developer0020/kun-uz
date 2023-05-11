@@ -19,10 +19,10 @@ public class SavedArticleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @Column(name = "profile_id")
+    @JoinColumn(name = "profile_id",insertable = false, updatable = false)
     private ProfileEntity profile;
     @ManyToOne
-    @Column(name = "article_id")
+    @JoinColumn(name = "article_id",insertable = false, updatable = false)
     private ArticleEntity article;
     @Column(name = "created_date")
     private LocalDateTime createdDate = LocalDateTime.now();

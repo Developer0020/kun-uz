@@ -62,9 +62,9 @@ public class ProfileController {
                                                        @RequestParam("size") int size) {
         return null;
     }
-    @PostMapping("/filter")
-    public ResponseEntity<?> filter(@RequestBody ProfileFilterRequestDTO filterRequestDTO) {
-        List<ProfileDTO> dtoList = profileService.filter(filterRequestDTO);
-        return ResponseEntity.ok(dtoList);
-    }
+//    @PostMapping("/filter")
+//    public ResponseEntity<?> filter(@RequestBody ProfileFilterRequestDTO filterRequestDTO) {
+//        List<ProfileDTO> dtoList = profileService.filter(filterRequestDTO);
+//        return ResponseEntity.ok(dtoList);
+//    }
 }

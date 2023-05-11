@@ -67,8 +67,11 @@ public class ArticleEntity {
     private Boolean visible = Boolean.TRUE;
     @Column(name = "view_count")
     private Integer viewCount;
-    @ManyToOne
-    @Column(name = "type_id")
+
+    @Column(name = "article_type_id")
+    private Integer articleTypeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_type_id", insertable = false, updatable = false)
     private ArticleTypeEntity articleType;
     public ArticleEntity(String id, String title, String description, String attachId, LocalDateTime publishedDate) {
         this.id = id;

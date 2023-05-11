@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.dto.articleType.ArticleTypeDTO;
 import com.example.dto.articleType.ArticleTypeRequestDTO;
 import com.example.entity.ArticleTypeEntity;
+import com.example.exception.ArticleTypeNotFoundException;
 import com.example.exception.ItemNotFoundException;
 import com.example.repository.ArticleTypeRepository;
 import lombok.AllArgsConstructor;
@@ -36,7 +37,7 @@ public class ArticleTypeService {
         articleTypeRepository.save(entity);
         return "Successful updated !!!";
     }
-    private ArticleTypeEntity getById(Integer id) {
+    public ArticleTypeEntity getById(Integer id) {
         ArticleTypeEntity entity=articleTypeRepository.findById(id).orElse(null);
         if (entity==null){
             throw new ItemNotFoundException("item not found");
@@ -94,5 +95,12 @@ public class ArticleTypeService {
         });
         return response;
 
+    }
+    public ArticleTypeEntity get(String name) {
+        ArticleTypeEntity entity = articleTypeRepository.findByName(name);
+        if (entity == null) {
+            throw new ArticleTypeNotFoundException("not fount type");
+        }
+        return entity;
     }
 }

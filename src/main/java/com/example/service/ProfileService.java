@@ -132,13 +132,13 @@ public class ProfileService {
         // throw ...
     }
 
-    public List<ProfileDTO> filter(ProfileFilterRequestDTO filterRequestDTO) {
-        List<ProfileEntity> entityList = profileCustomRepository.filter(filterRequestDTO);
-        List<ProfileDTO> dtoList = new LinkedList<>();
-        for (ProfileEntity entity : entityList) {
-            dtoList.add(toDTO(entity));
-        }
-        return dtoList;
-    }
+//    public List<ProfileDTO> filter(ProfileFilterRequestDTO filterRequestDTO) {
+////        List<ProfileEntity> entityList = profileCustomRepository.filter(filterRequestDTO);
+//        List<ProfileDTO> dtoList = new LinkedList<>();
+//        for (ProfileEntity entity : entityList) {
+//            dtoList.add(toDTO(entity));
+//        }
+//        return dtoList;
+//    }
 
 }

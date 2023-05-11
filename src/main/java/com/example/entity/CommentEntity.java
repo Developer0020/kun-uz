@@ -18,12 +18,12 @@ public class CommentEntity {
     private LocalDateTime createdDate = LocalDateTime.now();
     @Column(name = "update_date")
     private LocalDateTime updateDate;
-    @Column(name = "profile_id")
+    @JoinColumn(name = "profile_id",insertable = false, updatable = false)
     @ManyToOne
     private ProfileEntity profile;
     @Column(name = "content")
     private String content;
-    @Column(name = "article_id")
+    @JoinColumn(name = "article_id",insertable = false, updatable = false)
     @ManyToOne
     private ArticleEntity article;
     @Column(name = "reply_id")

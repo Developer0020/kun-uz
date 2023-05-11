@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.example.enums.CommentLikeStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,15 +20,14 @@ public class CommentLikeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
-    @Column(name = "profile_id")
+    @JoinColumn (name = "profile_id",insertable = false, updatable = false)
     private ProfileEntity profile;
     @ManyToOne
-    @Column(name = "comment_id")
+    @JoinColumn(name = "comment_id",insertable = false, updatable = false)
     private CommentEntity comment;
     @Column(name = "created_date")
     private LocalDateTime createdDate=LocalDateTime.now();
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private
-    //    id,profile_id,comment_id,created_date,status,
+    private CommentLikeStatus status;
 }

@@ -6,16 +6,18 @@ import com.example.util.JwtUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 public class MailSenderService {
-    private final JavaMailSender javaMailSender;
-    private final EmailHistoryRepository emailHistoryRepository;
+    @Autowired
+    private  JavaMailSender javaMailSender;
+    @Autowired
+    private  EmailHistoryRepository emailHistoryRepository;
     @Value("${spring.mail.username}")
     private String fromAccount;
     @Value("${server.host}")
